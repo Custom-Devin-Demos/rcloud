@@ -119,6 +119,7 @@
         var upload_ocaps = options.upload_ocaps || rcloud._ocaps.file_upload;
         react = react || {};
         options = upload_opts(options);
+        var destination = options.destination || 'user';
         var upload = binary_upload(upload_ocaps, react);
         function upload_file(path, file) {
             var upload_name = path + '/' + file.name;
@@ -140,6 +141,14 @@
                 });
         }
 
+        function get_upload_path() {
+            if (destination === 'working_directory') {
+                return upload_ocaps.working_directory_pathAsync();
+            } else {
+                return upload_ocaps.upload_pathAsync();
+            }
+        }
+
         if(!(window.File && window.FileReader && window.FileList && window.Blob))
             return Promise.reject(new Error("File API not supported by browser."));
         else {
@@ -147,7 +156,7 @@
                 return Promise.reject(new Error("No files selected!"));
             else {
                 /*FIXME add logged in user */
-                return upload_ocaps.upload_pathAsync()
+                return get_upload_path()
                     .then(function(path) {
                         return RCloud.utils.promise_sequence(options.files, upload_file.bind(null, path));
                     });

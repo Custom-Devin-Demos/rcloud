@@ -16,7 +16,22 @@ RCloud.UI.upload_with_alerts = (function() {
         return opts;
     }
 
-    function upload_files(to_notebook, options) {
+    function upload_files(destination, options) {
+        // destination can be 'user', 'notebook', or 'working_directory'
+        // for backward compatibility, also accept boolean (true = notebook, false = user)
+        if (_.isBoolean(destination)) {
+            destination = destination ? 'notebook' : 'user';
+        }
+        destination = destination || 'user';
+
+        function get_destination_label() {
+            switch(destination) {
+                case 'notebook': return 'notebook';
+                case 'working_directory': return 'working directory';
+                default: return 'user directory';
+            }
+        }
+
         // we could easily continue optionifying this
         function results_append($div) {
             options.$upload_results.append($div);
@@ -70,7 +85,8 @@ RCloud.UI.upload_with_alerts = (function() {
                     options.$progress_bar.css("width", (100 * (read / size)) + "%");
                 },
                 done: function(is_replace, filename) {
-                    result_success("File " + filename + " " + (is_replace ? "replaced." : "uploaded."));
+                    var dest_label = get_destination_label();
+                    result_success("File " + filename + " " + (is_replace ? "replaced" : "uploaded") + " to " + dest_label + ".");
                 },
                 confirm_replace: Promise.promisify(function(filename, callback) {
                     var overwrite_click = function() {
@@ -92,6 +108,7 @@ RCloud.UI.upload_with_alerts = (function() {
         }
 
         options = upload_ui_opts(options || {});
+        options.destination = destination;
         if(options.$result_panel.length && options.show_result !== false)
             // instead of RCloud.UI.right_panel - this could be better encapsulated!
             options.$result_panel.parent().parent().data('collapsible-column').collapse(options.$result_panel, false);
@@ -117,7 +134,7 @@ RCloud.UI.upload_with_alerts = (function() {
         };
 
 
-        var promise = to_notebook ?
+        var promise = (destination === 'notebook') ?
                 RCloud.upload_assets(options, asset_react(options)) :
                 RCloud.upload_files(options, file_react(options));
 

@@ -30,3 +30,14 @@ rcloud.upload.close.file <- function()
 }
 
 rcloud.upload.path <- function(...) file.path(rcloud.home(), ...)
+
+rcloud.upload.working_directory_path <- function(...) {
+  wd <- getwd()
+  if (is.null(wd) || !nzchar(wd))
+    stop("rcloud.upload: working directory is not set")
+  if (!file.exists(wd))
+    stop("rcloud.upload: working directory does not exist")
+  if (!file.info(wd)$isdir)
+    stop("rcloud.upload: working directory is not a directory")
+  file.path(wd, ...)
+}
