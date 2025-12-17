@@ -16,7 +16,7 @@ RCloud.UI.upload_with_alerts = (function() {
         return opts;
     }
 
-    function upload_files(to_notebook, options) {
+    function upload_files(destination, options) {
         // we could easily continue optionifying this
         function results_append($div) {
             options.$upload_results.append($div);
@@ -58,7 +58,8 @@ RCloud.UI.upload_with_alerts = (function() {
             };
         }
 
-        function file_react(options) {
+        function file_react(options, destination) {
+            var destLabel = destination === 'working_directory' ? 'working directory' : 'user directory';
             return {
                 start: function(filename) {
                     options.$progress.show();
@@ -70,7 +71,7 @@ RCloud.UI.upload_with_alerts = (function() {
                     options.$progress_bar.css("width", (100 * (read / size)) + "%");
                 },
                 done: function(is_replace, filename) {
-                    result_success("File " + filename + " " + (is_replace ? "replaced." : "uploaded."));
+                    result_success("File " + filename + " " + (is_replace ? "replaced" : "uploaded") + " to " + destLabel + ".");
                 },
                 confirm_replace: Promise.promisify(function(filename, callback) {
                     var overwrite_click = function() {
@@ -116,10 +117,13 @@ RCloud.UI.upload_with_alerts = (function() {
             throw err;
         };
 
-
-        var promise = to_notebook ?
-                RCloud.upload_assets(options, asset_react(options)) :
-                RCloud.upload_files(options, file_react(options));
+        var promise;
+        if(destination === 'notebook') {
+            promise = RCloud.upload_assets(options, asset_react(options));
+        } else {
+            options.destination = destination;
+            promise = RCloud.upload_files(options, file_react(options, destination));
+        }
 
         // this promise is after all overwrites etc.
         return promise.catch(function(err) {

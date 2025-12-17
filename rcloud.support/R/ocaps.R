@@ -256,7 +256,8 @@ authenticated.ocaps <- function(mode)
         create = make.oc(rcloud.upload.create.file),
         write = make.oc(rcloud.upload.write.file),
         close = make.oc(rcloud.upload.close.file),
-        upload_path = make.oc(rcloud.upload.path)
+        upload_path = make.oc(rcloud.upload.path),
+        working_directory_path = make.oc(rcloud.upload.working_directory_path)
         ),
       ### FIXME: remove from ocaps - we should not be using this anymore,
       ### it has been replaced by update_notebook
