@@ -15,8 +15,8 @@ RCloud.UI.upload_frame = {
         $("#upload-submit").click(function() {
             if($("#file")[0].files.length===0)
                 return;
-            var to_notebook = ($('#upload-to-notebook').is(':checked'));
-            RCloud.UI.upload_with_alerts(to_notebook)
+            var destination = $('input[name="upload-destination"]:checked').val() || 'user';
+            RCloud.UI.upload_with_alerts(destination)
                 .catch(function() {}); // we have special handling for upload errors
         });
         RCloud.session.listeners.push({
