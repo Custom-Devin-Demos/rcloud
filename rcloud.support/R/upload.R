@@ -30,3 +30,5 @@ rcloud.upload.close.file <- function()
 }
 
 rcloud.upload.path <- function(...) file.path(rcloud.home(), ...)
+
+rcloud.upload.working_directory_path <- function(...) file.path(getwd(), ...)

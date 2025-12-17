@@ -117,6 +117,7 @@
 
     RCloud.upload_files = function(options, react) {
         var upload_ocaps = options.upload_ocaps || rcloud._ocaps.file_upload;
+        var destination = options.destination || 'user';
         react = react || {};
         options = upload_opts(options);
         var upload = binary_upload(upload_ocaps, react);
@@ -146,8 +147,13 @@
             if(_.isUndefined(options.files) || !options.files.length)
                 return Promise.reject(new Error("No files selected!"));
             else {
-                /*FIXME add logged in user */
-                return upload_ocaps.upload_pathAsync()
+                var pathPromise;
+                if(destination === 'working_directory') {
+                    pathPromise = upload_ocaps.working_directory_pathAsync();
+                } else {
+                    pathPromise = upload_ocaps.upload_pathAsync();
+                }
+                return pathPromise
                     .then(function(path) {
                         return RCloud.utils.promise_sequence(options.files, upload_file.bind(null, path));
                     });
