@@ -47,8 +47,8 @@ fi
 
 if [ -z "$SKIP_JS" ]; then
     # build JS (if available)
-    if [ \( -d ./node_modules \) -a \( -f node_modules/grunt-cli/bin/grunt \) ]; then
-        node_modules/grunt-cli/bin/grunt || exit 1
+    if [ \( -d ./node_modules \) -a \( -f node_modules/.bin/vite \) ]; then
+        npx vite build || exit 1
     else
         echo "ERROR: JavaScript and CSS targets can't be built without node and npm tools installed."
         echo " run \`npm install\` from the RCloud root directory to enable these targets."

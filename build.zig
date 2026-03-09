@@ -235,7 +235,7 @@ fn add_all_source_files(b: *Build, wf: *WriteFile, dirname: []const u8) void {
     _ = add_copy_file(b, wf, "build.zig.zon", dirname);
     _ = add_copy_file(b, wf, "flake.lock", dirname);
     _ = add_copy_file(b, wf, "flake.nix", dirname);
-    _ = add_copy_file(b, wf, "Gruntfile.js", dirname);
+    _ = add_copy_file(b, wf, "vite.config.js", dirname);
     _ = add_copy_file(b, wf, "LICENSE", dirname);
     _ = add_copy_file(b, wf, "NEWS.md", dirname);
     _ = add_copy_file(b, wf, "package.json", dirname);
@@ -330,24 +330,24 @@ fn build_htdocs(b: *Build) void {
     npm_ci.addFileInput(wf.addCopyFile(b.path("package-lock.json"), "package-lock.json"));
     npm_ci.expectExitCode(0);
 
-    // run grunt
-    const grunt = b.addSystemCommand(&.{"node_modules/grunt-cli/bin/grunt"});
-    grunt.setCwd(wf.getDirectory());
-    grunt.addFileInput(wf.addCopyFile(b.path("Gruntfile.js"), "Gruntfile.js"));
-    grunt.addFileInput(wf.addCopyFile(b.path("VERSION"), "VERSION"));
-    grunt.addFileInput(wf.getDirectory().path(b, "node_modules/grunt-cli/bin/grunt"));
-    grunt.expectExitCode(0);
+    // run vite build (replaces grunt)
+    const vite = b.addSystemCommand(&.{ "node_modules/.bin/vite", "build" });
+    vite.setCwd(wf.getDirectory());
+    vite.addFileInput(wf.addCopyFile(b.path("vite.config.js"), "vite.config.js"));
+    vite.addFileInput(wf.addCopyFile(b.path("VERSION"), "VERSION"));
+    vite.addFileInput(wf.getDirectory().path(b, "node_modules/.bin/vite"));
+    vite.expectExitCode(0);
 
     // which depends on npm_ci
-    grunt.step.dependOn(&npm_ci.step);
+    vite.step.dependOn(&npm_ci.step);
 
-    // add an install step for post-grunt htdocs
+    // add an install step for post-vite htdocs
     const htdocs_install = b.addInstallDirectory(.{
         .source_dir = wf.getDirectory().path(b, "htdocs"),
         .install_dir = .prefix,
         .install_subdir = "htdocs",
     });
-    htdocs_install.step.dependOn(&grunt.step);
+    htdocs_install.step.dependOn(&vite.step);
 
     // install built htdocs files
     b.getInstallStep().dependOn(&htdocs_install.step);
