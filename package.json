@@ -3,15 +3,15 @@
   "version": "0.0.0",
   "license": "MIT",
   "description": "RCloud is not distributed through npm",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  },
   "devDependencies": {
     "eslint": "latest",
-    "grunt": "latest",
-    "grunt-cli": "latest",
-    "grunt-contrib-compress": "latest",
-    "grunt-contrib-concat": "latest",
-    "grunt-contrib-uglify": "latest",
-    "grunt-sass": "latest",
-    "load-grunt-tasks": "latest",
-    "sass": "latest"
+    "sass": "latest",
+    "terser": "latest",
+    "vite": "^6.0.0"
   }
 }

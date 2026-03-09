@@ -193,7 +193,7 @@ COPY rcloud.packages rcloud.packages
 COPY rcloud.support  rcloud.support
 COPY scripts         scripts
 COPY services        services
-COPY Gruntfile.js    .
+COPY vite.config.js  .
 COPY LICENSE         .
 COPY package-lock.json .
 COPY package.json    .
@@ -218,7 +218,7 @@ WORKDIR /data/rcloud
 # Copy additional files not needed for build but included in source distribution
 COPY flake.nix    .
 COPY flake.lock   .
-COPY Gruntfile.js .
+COPY vite.config.js .
 COPY LICENSE      .
 COPY README.md    .
 COPY NEWS.md      .
