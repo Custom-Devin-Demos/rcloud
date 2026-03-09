@@ -360,7 +360,7 @@ fn build_htdocs_offline(b: *Build) void {
     // copy htdocs source
     _ = wf.addCopyDirectory(b.path("htdocs"), "htdocs", .{});
 
-    // add an install step for post-grunt htdocs
+    // add an install step for post-vite htdocs
     const htdocs_install = b.addInstallDirectory(.{
         .source_dir = wf.getDirectory().path(b, "htdocs"),
         .install_dir = .prefix,

@@ -3,7 +3,7 @@ RCloud-flavored Ace
 RCloud's version of ace.js is the standard ace-builds distribution (`src` version), with the
 following changes:
 
-- we concatenate using grunt (see RCloud root Gruntfile.js)
+- we concatenate using vite (see RCloud root vite.config.js)
 - `ace/_begin.js` and `ace/_end.js` backup and restore some global variables; this may have a
   similar effect to the `src-noconflict` version
 - we use the following files from `rstudio/ace-cpp-autoindent` - these appear to be the same sources
